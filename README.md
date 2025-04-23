@@ -7,14 +7,14 @@ pip install -r requirements.txt
 # Usage:
 Download the pretrained models and place them in the 'pretrained' directory:
 [https://drive.google.com/drive/folders/1tdz1DZa8prWsFLtCc-7bmvyzNAYqppZS?usp=sharing](https://drive.google.com/drive/folders/1tdz1DZa8prWsFLtCc-7bmvyzNAYqppZS?usp=sharing)
-```
+
 
 An example dataset is found in ./datasets/faces_child
 
 For the main framework with default settings (example dataset), please run:
-
+```
 python test_DOAI.py
-
+```
 The output heatmaps and the normalized images can be found in the 'result' directory
 ```
 If you find this implementation helpful in your research, please also consider citing:
