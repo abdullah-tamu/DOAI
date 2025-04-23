@@ -14,9 +14,9 @@ An example dataset is found in ./datasets/faces_child
 For the main framework with default settings (example dataset), please run:
 ```
 python test_DOAI.py
-
-The output heatmaps and the normalized images can be found in the 'result' directory
 ```
+The output heatmaps and the normalized images can be found in the 'result' directory
+
 If you find this implementation helpful in your research, please also consider citing:
 ```
 @article{hayajneh2023unsupervised,
