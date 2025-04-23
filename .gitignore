@@ -1,0 +1,6 @@
+.idea/
+__pycache__/
+/pretrained/CelebA-HQ_512.pkl
+/pretrained/FFHQ_512.pkl
+
+
