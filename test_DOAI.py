@@ -90,7 +90,7 @@ def test_epoch(model_ST: CDOModel,model_inpaint, dataloader: DataLoader, device:
 
 
             initial_heatmap=np.array(test_stage_1(model_ST, data, device))*100
-
+            
 
             mask_heatmap=True
             if mask_heatmap:
@@ -101,11 +101,12 @@ def test_epoch(model_ST: CDOModel,model_inpaint, dataloader: DataLoader, device:
                 m = cv2.resize(m, (res, res))
                 initial_heatmap[:,m == 0] = 0
 
-
+            
             T=50 #cleft
             initial_heatmap_b = (np.array(initial_heatmap) < T).astype(np.int_)
 
             final_heatmap,normalized_img=test_stage_2(model_inpaint,data,initial_heatmap_b, device)
+            rating=np.sum(final_heatmap)
             final_heatmap=final_heatmap*255
             viz_final_map=False
             if viz_final_map:
@@ -123,9 +124,14 @@ def test_epoch(model_ST: CDOModel,model_inpaint, dataloader: DataLoader, device:
             if normalized_imgs is None:
                 normalized_imgs = []
 
+            if ratings is None:
+                ratings = []
+
             initial_heatmaps.extend(initial_heatmap)
             final_heatmaps.extend(final_heatmap)
             normalized_imgs.extend(normalized_img)
+            ratings.extend(rating*6+1)
+            
 
 
 
@@ -138,7 +144,7 @@ def test_epoch(model_ST: CDOModel,model_inpaint, dataloader: DataLoader, device:
 
 
 
-    result_dict = {'names': names, 'heatmaps': initial_heatmaps}
+    result_dict = {'names': names, 'heatmaps': initial_heatmaps, 'ratings':ratings}
 
     return result_dict
 
@@ -177,6 +183,7 @@ def main(args):
     model_inpainting = load_inpainting_model(dataset.inpainting_pkl, device)
 
     metrics = test_epoch(model, model_inpainting, test_dataloader, device, True, img_dir)
+    print(metrics.get("ratings"))
 
     return metrics
 
