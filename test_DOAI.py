@@ -107,6 +107,20 @@ def test_epoch(model_ST: CDOModel,model_inpaint, dataloader: DataLoader, device:
 
             final_heatmap,normalized_img=test_stage_2(model_inpaint,data,initial_heatmap_b, device)
             rating=np.sum(final_heatmap)
+
+
+            min_mean_predicted=3.5540038
+            max_mean_predicted=4.195666
+            max_mean=4.734
+            min_mean=1.448
+     
+            rating = ((rating - min_mean_predicted) / (max_mean_predicted - min_mean_predicted)) * (
+                    max_mean - min_mean) + min_mean 
+        
+            scores_names = [[val[1], ((-np.log10(val[2]) - min_mean_predicted) / (max_mean_predicted - min_mean_predicted)) * (
+                    max_mean - min_mean) + min_mean] for val in maps]
+
+          
             final_heatmap=final_heatmap*255
             viz_final_map=False
             if viz_final_map:
