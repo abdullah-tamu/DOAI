@@ -77,6 +77,7 @@ def test_epoch(model_ST: CDOModel,model_inpaint, dataloader: DataLoader, device:
     initial_heatmaps = None
     final_heatmaps = None
     normalized_imgs=None
+    ratings=None
     test_imgs = []
     names = []
     detect=True
@@ -84,6 +85,7 @@ def test_epoch(model_ST: CDOModel,model_inpaint, dataloader: DataLoader, device:
         for (data, mask, label, name) in tqdm(dataloader):
             if mask.shape[1]==4:
                 e=0
+            print(name)
             for d, n in zip(data, name):
                 test_imgs.append((d.cpu().numpy().transpose(1, 2, 0)*255).astype(np.uint8))
                 names.append(n)
@@ -104,28 +106,30 @@ def test_epoch(model_ST: CDOModel,model_inpaint, dataloader: DataLoader, device:
             
             T=50 #cleft
             initial_heatmap_b = (np.array(initial_heatmap) < T).astype(np.int_)
-
+            # cv2.imshow('s', np.array(initial_heatmap_b[0]*255, dtype=np.uint8))
+            # cv2.waitKey()
             final_heatmap,normalized_img=test_stage_2(model_inpaint,data,initial_heatmap_b, device)
-            rating=np.sum(final_heatmap)
+            rating=[-np.sum(hmap) for hmap in final_heatmap]
 
 
-            min_mean_predicted=3.5540038
-            max_mean_predicted=4.195666
+            min_mean_predicted=-1500
+            max_mean_predicted=0
             max_mean=4.734
             min_mean=1.448
-     
-            rating = ((rating - min_mean_predicted) / (max_mean_predicted - min_mean_predicted)) * (
-                    max_mean - min_mean) + min_mean 
-        
-            scores_names = [[val[1], ((-np.log10(val[2]) - min_mean_predicted) / (max_mean_predicted - min_mean_predicted)) * (
-                    max_mean - min_mean) + min_mean] for val in maps]
+
+            rating = [((rt - min_mean_predicted) / (max_mean_predicted - min_mean_predicted)) * (
+                    max_mean - min_mean) + min_mean for rt in rating]
+            # print(rating)
+            # scores_names = [[val[1], ((-np.log10(val[2]) - min_mean_predicted) / (max_mean_predicted - min_mean_predicted)) * (
+            #         max_mean - min_mean) + min_mean] for val in maps]
 
           
             final_heatmap=final_heatmap*255
             viz_final_map=False
             if viz_final_map:
                 import cv2
-                cv2.imshow('s', cv2.cvtColor(final_heatmap[0],cv2.COLOR_RGB2BGR))
+                # cv2.imshow('s', cv2.cvtColor(final_heatmap[0],cv2.COLOR_RGB2BGR))
+                cv2.imshow('s', np.array(final_heatmap[0],dtype=np.uint8))
                 cv2.waitKey()
 
             if initial_heatmaps is None:
@@ -144,7 +148,7 @@ def test_epoch(model_ST: CDOModel,model_inpaint, dataloader: DataLoader, device:
             initial_heatmaps.extend(initial_heatmap)
             final_heatmaps.extend(final_heatmap)
             normalized_imgs.extend(normalized_img)
-            ratings.extend(rating*6+1)
+            ratings.extend(rating)
             
 
 
