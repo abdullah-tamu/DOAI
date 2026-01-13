@@ -99,7 +99,8 @@ def test_epoch(model_ST: CDOModel,model_inpaint, dataloader: DataLoader, device:
                 res=initial_heatmap.shape[1]
                 import cv2
 
-                m = cv2.imread('masks/face_mask.png', 0)
+                #m = cv2.imread('masks/face_mask.png', 0)
+                m = cv2.imread('masks/mask.png', 0)
                 m = cv2.resize(m, (res, res))
                 initial_heatmap[:,m == 0] = 0
 
