@@ -105,6 +105,7 @@ def test_epoch(model_ST: CDOModel,model_inpaint, dataloader: DataLoader, device:
 
             
             T=50 #cleft
+            T=25 #cleft
             initial_heatmap_b = (np.array(initial_heatmap) < T).astype(np.int_)
             # cv2.imshow('s', np.array(initial_heatmap_b[0]*255, dtype=np.uint8))
             # cv2.waitKey()
